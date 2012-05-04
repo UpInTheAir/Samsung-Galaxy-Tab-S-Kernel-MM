@@ -283,6 +283,7 @@ MODULE_DEVICE_TABLE(usb, xpad_table);
 struct usb_xpad {
 	struct input_dev *dev;		/* input device interface */
 	struct usb_device *udev;	/* usb device */
+	struct usb_interface *intf;	/* usb interface */
 
 	int pad_present;
 
@@ -585,7 +586,7 @@ static void xpadone_process_packet(struct usb_xpad *xpad,
 static void xpad_irq_in(struct urb *urb)
 {
 	struct usb_xpad *xpad = urb->context;
-	struct device *dev = &xpad->dev->dev;
+	struct device *dev = &xpad->intf->dev;
 	int retval, status;
 
 	status = urb->status;
@@ -631,7 +632,7 @@ exit:
 static void xpad_bulk_out(struct urb *urb)
 {
 	struct usb_xpad *xpad = urb->context;
-	struct device *dev = &xpad->dev->dev;
+	struct device *dev = &xpad->intf->dev;
 
 	switch (urb->status) {
 	case 0:
@@ -653,7 +654,7 @@ static void xpad_bulk_out(struct urb *urb)
 static void xpad_irq_out(struct urb *urb)
 {
 	struct usb_xpad *xpad = urb->context;
-	struct device *dev = &xpad->dev->dev;
+	struct device *dev = &xpad->intf->dev;
 	int retval, status;
 
 	status = urb->status;
@@ -1007,6 +1008,7 @@ static int xpad_probe(struct usb_interface *intf, const struct usb_device_id *id
 	}
 
 	xpad->udev = udev;
+	xpad->intf = intf;
 	xpad->mapping = xpad_device[i].mapping;
 	xpad->xtype = xpad_device[i].xtype;
 
