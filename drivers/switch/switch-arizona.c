@@ -852,7 +852,8 @@ static void arizona_micd_detect(struct work_struct *work)
 
 handled:
 	if (info->detecting)
-		schedule_delayed_work(&info->micd_timeout_work,
+		queue_delayed_work(system_power_efficient_wq,
+				      &info->micd_timeout_work,
 				      msecs_to_jiffies(info->micd_timeout));
 
 	pm_runtime_mark_last_busy(info->dev);
@@ -874,7 +875,8 @@ static irqreturn_t arizona_micdet(int irq, void *data)
 	mutex_unlock(&info->lock);
 
 	if (debounce)
-		schedule_delayed_work(&info->micd_detect_work,
+		queue_delayed_work(system_power_efficient_wq,
+				      &info->micd_detect_work,
 				      msecs_to_jiffies(debounce));
 	else
 		arizona_micd_detect(&info->micd_detect_work.work);
@@ -929,11 +931,13 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
 	if (val == info->last_jackdet) {
 		dev_dbg(arizona->dev, "Suppressing duplicate JACKDET\n");
 		if (cancelled_hp)
-			schedule_delayed_work(&info->hpdet_work,
+			queue_delayed_work(system_power_efficient_wq,
+					      &info->hpdet_work,
 					      msecs_to_jiffies(HPDET_DEBOUNCE));
 
 		if (cancelled_mic)
-			schedule_delayed_work(&info->micd_timeout_work,
+			queue_delayed_work(system_power_efficient_wq,
+					      &info->micd_timeout_work,
 					      msecs_to_jiffies(info->micd_timeout));
 
 		goto out;
@@ -956,7 +960,8 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
 
 			arizona_start_mic(info);
 		} else {
-			schedule_delayed_work(&info->hpdet_work,
+			queue_delayed_work(system_power_efficient_wq,
+					      &info->hpdet_work,
 					      msecs_to_jiffies(HPDET_DEBOUNCE));
 		}
 
