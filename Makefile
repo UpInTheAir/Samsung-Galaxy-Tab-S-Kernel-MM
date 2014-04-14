@@ -659,6 +659,8 @@ endif
 #       KBUILD_AFLAGS += -DTIMA_LKM_AUTH_ENABLED
 #endif
 
+include $(srctree)/scripts/Makefile.extrawarn
+
 # Add user supplied CPPFLAGS, AFLAGS and CFLAGS as the last assignments
 # But warn user when we do so
 warn-assign = \
