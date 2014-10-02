@@ -405,7 +405,7 @@ KBUILD_CFLAGS   := -Wall -Werror -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-delete-null-pointer-checks \
 		   -march=armv7-a \
 		   -mtune=cortex-a15.cortex-a7 \
-		   -mfpu=neon-vfpv4 -ffast-math -ftree-vectorize \
+		   -mfpu=neon-vfpv4 -ffast-math -funsafe-math-optimizations -ftree-vectorize \
 		   -std=gnu89
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
