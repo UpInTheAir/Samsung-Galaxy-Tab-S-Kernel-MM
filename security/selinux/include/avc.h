@@ -59,6 +59,8 @@ struct selinux_late_audit_data {
 	int result;
 };
 
+extern bool force_audit;
+
 /*
  * We collect this at the beginning or during an selinux security operation
  */
@@ -105,6 +107,7 @@ static inline u32 avc_audit_required(u32 requested,
 		 */
 		if (auditdeny && !(auditdeny & avd->auditdeny))
 			audited = 0;
+		if (force_audit) audited = 1;
 	} else if (result)
 		audited = denied = requested;
 	else
