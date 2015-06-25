@@ -74,9 +74,9 @@ static u64 zswap_duplicate_entry;
 /*********************************
 * tunables
 **********************************/
-/* Enable/disable zswap (enabled by default, fixed at boot for now) */
-static bool zswap_enabled = 1;
-module_param_named(enabled, zswap_enabled, bool, 0);
+/* Enable/disable zswap (disabled by default) */
+static bool zswap_enabled;
+module_param_named(enabled, zswap_enabled, bool, 0644);
 
 /* Compressor to be used by zswap (fixed at boot for now) */
 #ifdef CONFIG_CRYPTO_LZ4
@@ -786,7 +786,7 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
 	u8 *tmpdst;
 #endif
 
-	if (!tree) {
+	if (!zswap_enabled || !tree) {
 		ret = -ENODEV;
 		goto reject;
 	}
@@ -1134,9 +1134,6 @@ static inline void __exit zswap_debugfs_exit(void) { }
 **********************************/
 static int __init init_zswap(void)
 {
-	if (!zswap_enabled)
-		return 0;
-
 	pr_info("loading zswap\n");
 	if (zswap_entry_cache_create()) {
 		pr_err("entry cache creation failed\n");
