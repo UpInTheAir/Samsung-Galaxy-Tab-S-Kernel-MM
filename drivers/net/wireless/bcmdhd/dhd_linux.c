@@ -5583,7 +5583,7 @@ power_mode = wifi_pm_awake;
 	setbit(eventmask, WLC_E_AIBSS_TXFAIL);
 #endif /* WLAIBSS */
 
-	setbit(eventmask, WLC_E_TRACE);
+	clrbit(eventmask, WLC_E_TRACE);
 #ifdef DHD_LOSSLESS_ROAMING
 	setbit(eventmask, WLC_E_ROAM_PREP);
 #endif
