@@ -13,6 +13,12 @@
 
 #include <linux/battery/sec_battery.h>
 
+static unsigned int STORE_MODE_CHARGING_MAX = 70;
+static unsigned int STORE_MODE_CHARGING_MIN = 60;
+
+module_param_named(store_mode_max, STORE_MODE_CHARGING_MAX, uint, S_IWUSR | S_IRUGO);
+module_param_named(store_mode_min, STORE_MODE_CHARGING_MIN, uint, S_IWUSR | S_IRUGO);
+
 static struct device_attribute sec_battery_attrs[] = {
 	SEC_BATTERY_ATTR(batt_reset_soc),
 	SEC_BATTERY_ATTR(batt_read_raw_soc),
