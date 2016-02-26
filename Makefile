@@ -247,6 +247,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 HOSTCC       = $(CCACHE) gcc
 HOSTCXX      = $(CCACHE) g++
 
+GRAPHITE     = -fgraphite-identity -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -floop-flatten -floop-nest-optimize
+
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89
 HOSTCXXFLAGS = -O2
@@ -262,6 +264,11 @@ endif
 ifdef CONFIG_CC_OPTIMIZE_FAST
 HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -Ofast -fomit-frame-pointer -std=gnu89
 HOSTCXXFLAGS = -Ofast
+endif
+
+ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
+HOSTCFLAGS   = $(GRAPHITE)
+HOSTCXXFLAGS = $(GRAPHITE)
 endif
 
 # Decide whether to build built-in, modular, or both.
@@ -348,6 +355,13 @@ AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
 CC		= $(CCACHE) $(CROSS_COMPILE)gcc
 CPP		= $(CC) -E
+ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
+CC		+= $(GRAPHITE) $(CCACHE) $(CROSS_COMPILE)gcc
+CPP		+= $(GRAPHITE) $(CC) -E
+else
+CC		= $(CCACHE) $(CROSS_COMPILE)gcc
+CPP		= $(CC) -E
+endif
 AR		= $(CROSS_COMPILE)ar
 NM		= $(CROSS_COMPILE)nm
 STRIP		= $(CROSS_COMPILE)strip
@@ -366,7 +380,11 @@ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 CFLAGS_MODULE   =
 AFLAGS_MODULE   =
 LDFLAGS_MODULE  =
+ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
+CFLAGS_KERNEL	= $(GRAPHITE)
+else
 CFLAGS_KERNEL	=
+endif
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage -fno-tree-loop-im
 
@@ -591,6 +609,9 @@ KBUILD_CFLAGS	+= -O3
 endif
 ifdef CONFIG_CC_OPTIMIZE_FAST
 KBUILD_CFLAGS	+= -Ofast
+endif
+ifdef CONFIG_CC_GRAPHITE_OPTIMIZATION
+KBUILD_CFLAGS	+= $(GRAPHITE)
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
