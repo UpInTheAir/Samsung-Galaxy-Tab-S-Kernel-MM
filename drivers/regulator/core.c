@@ -1359,6 +1359,7 @@ void regulator_put(struct regulator *regulator)
 	/* remove any sysfs entries */
 	if (regulator->dev)
 		sysfs_remove_link(&rdev->dev.kobj, regulator->supply_name);
+	mutex_lock(&rdev->mutex);
 	kfree(regulator->supply_name);
 	list_del(&regulator->list);
 	kfree(regulator);
@@ -1368,6 +1369,7 @@ void regulator_put(struct regulator *regulator)
 
 	module_put(rdev->owner);
 	mutex_unlock(&regulator_list_mutex);
+	mutex_unlock(&rdev->mutex);
 }
 EXPORT_SYMBOL_GPL(regulator_put);
 
