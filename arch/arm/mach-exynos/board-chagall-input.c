@@ -530,6 +530,7 @@ static struct platform_device gpio_keys = {
 	},
 };
 
+#ifdef CONFIG_SEC_DEBUG
 static struct input_debug_key_state kstate[] = {
 	SET_DEBUG_KEY(KEY_POWER, false),
 	SET_DEBUG_KEY(KEY_VOLUMEUP, false),
@@ -548,6 +549,7 @@ static struct platform_device input_debug = {
 		.platform_data = &input_debug_platform_data,
 	},
 };
+#endif
 
 #ifdef CONFIG_INPUT_BOOSTER
 static enum booster_device_type get_booster_device(int code)
@@ -624,7 +626,9 @@ static struct platform_device *input_devices[] __initdata = {
 #if defined(CONFIG_KEYBOARD_TC300K)
 	&s3c_device_i2c9,
 #endif
+#ifdef CONFIG_SEC_DEBUG
 	&input_debug,
+#endif
 #ifdef CONFIG_INPUT_BOOSTER
 	&input_booster,
 #endif
