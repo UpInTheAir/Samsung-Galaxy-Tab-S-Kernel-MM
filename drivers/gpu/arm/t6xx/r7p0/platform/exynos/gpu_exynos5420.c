@@ -72,9 +72,10 @@ static gpu_dvfs_info gpu_dvfs_table_default[] = {
 };
 
 static int mif_min_table[] = {
-	 160000,  200000,  266000,
-	 400000,  533000,  667000,
-	 733000,  800000,
+	 133000,  160000,  200000,
+	 266000,  266000,  400000,
+	 533000,  667000,  733000,
+	 800000,  933000,
 };
 
 //static int available_max_clock[] = {GPU_L2, GPU_L2, GPU_L0, GPU_L0, GPU_L0};
