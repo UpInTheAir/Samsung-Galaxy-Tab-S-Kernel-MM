@@ -504,9 +504,10 @@ void max77803_muic_usb_cb(u8 usb_mode)
 		pr_info("%s - USB_OTGHOST_DETACHED\n", __func__);
 	} else if (usb_mode == USB_POWERED_HOST_ATTACHED) {
 #ifdef CONFIG_USB_HOST_NOTIFY
-
+		if (cable_type == CABLE_TYPE_LANHUB_MUIC)
+		{
 			host_noti_pdata->ndev.mode = NOTIFY_HOST_MODE;
-
+		}
 		if(host_noti_pdata->block_type==NOTIFY_BLOCK_TYPE_ALL||host_noti_pdata->block_type==NOTIFY_BLOCK_TYPE_HOST){
 			host_state_notify(&host_noti_pdata->ndev, NOTIFY_HOST_BLOCK);
 			return;
